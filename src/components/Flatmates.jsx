@@ -9,7 +9,8 @@ class Flatmates extends Component {
     greeting: "",
     score: "",
     userLogged: "",
-    answersForm: []
+    answersForm: [],
+    whatCleaned: ""
   };
 
   componentDidMount() {
@@ -43,14 +44,92 @@ class Flatmates extends Component {
   // Find a way to store these value in answersForm array
   handleWhichTask1 = () => {
     const whichTask = document.getElementById("cleaned").value;
-    const floor = document.getElementById("cleanedFloor").value;
-    const surfaces = document.getElementById("cleanedSurfaces").value;
-    const trash = document.getElementById("cleanedTrash").value;
-    const other = document.getElementById("cleanedOther").value;
+    const floor = document.getElementById("cleanedFloor");
+    const surfaces = document.getElementById("cleanedSurfaces");
+    const trash = document.getElementById("cleanedTrash");
+    const other = document.getElementById("cleanedOther");
+    const living = document.getElementById("whereLiving");
+    const kitchen = document.getElementById("whereKitchen");
+    const entrance = document.getElementById("whereEntrance");
+    const halls = document.getElementById("whereHalls");
 
-    if (surfaces) {
-      this.setState({ answersForm: this.state.answersForm.push(whichTask) });
-      console.log(this.state.answersForm);
+    // Pass data via State whatCleaned
+    floor.onclick = () => {
+      this.setState({ whatCleaned: "floor" });
+    };
+    surfaces.onclick = () => {
+      this.setState({ whatCleaned: "surfaces" });
+    };
+    trash.onclick = () => {
+      this.setState({ whatCleaned: "trash" });
+    };
+    other.onclick = () => {
+      this.setState({ whatCleaned: "other" });
+    };
+
+    // Add all the variable into the Array and store the sum
+    living.onclick = () => {
+      if (this.state.whatCleaned === "floor") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, floor.value, living.value) });
+      }
+      if (this.state.whatCleaned === "surfaces") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, surfaces.value, living.value) });
+      }
+      if (this.state.whatCleaned === "trash") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, trash.value, living.value) });
+      }
+      if (this.state.whatCleaned === "other") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, other.value, living.value) });
+      }
+      this.handlePointsEarned();
+    };
+
+    kitchen.onclick = () => {
+      if (this.state.whatCleaned === "floor") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, floor.value, kitchen.value) });
+      }
+      if (this.state.whatCleaned === "surfaces") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, surfaces.value, kitchen.value) });
+      }
+      if (this.state.whatCleaned === "trash") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, trash.value, kitchen.value) });
+      }
+      if (this.state.whatCleaned === "other") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, other.value, kitchen.value) });
+      }
+      this.handlePointsEarned();
+    };
+
+    entrance.onclick = () => {
+      if (this.state.whatCleaned === "floor") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, floor.value, entrance.value) });
+      }
+      if (this.state.whatCleaned === "surfaces") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, surfaces.value, entrance.value) });
+      }
+      if (this.state.whatCleaned === "trash") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, trash.value, entrance.value) });
+      }
+      if (this.state.whatCleaned === "other") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, other.value, entrance.value) });
+      }
+      this.handlePointsEarned();
+    };
+
+    halls.onclick = () => {
+      if (this.state.whatCleaned === "floor") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, floor.value, halls.value) });
+      }
+      if (this.state.whatCleaned === "surfaces") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, surfaces.value, halls.value) });
+      }
+      if (this.state.whatCleaned === "trash") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, trash.value, halls.value) });
+      }
+      if (this.state.whatCleaned === "other") {
+        this.setState({ answersForm: this.state.answersForm.concat(whichTask, other.value, halls.value) });
+      }
+      this.handlePointsEarned();
     };
   }
 
@@ -63,6 +142,26 @@ class Flatmates extends Component {
       this.setState({ answersForm: this.state.answersForm.push(whichTask, whatPayed, howMuch) });
       console.log(this.state.answersForm);
     };
+  }
+
+  // Add all the locical calculs to share the points here
+  handlePointsEarned = () => {
+    if (this.state.answersForm.length === 3) {
+      // Make auth and firestore references
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      auth.onAuthStateChanged(user => {
+        // Initialize score of the user in db
+        db.collection("users").doc(user.uid).update({
+          score: firebase.firestore.FieldValue.increment(20)
+        })
+          .then(function () {
+            console.log("Document successfully written!");
+          })
+        console.log("Array answersForm.lenght vaut 3", this.state.answersForm);
+      });
+      // alert("You have earned X points for " + this.state.answersForm[0] + " the " + this.state.answersForm[1] + " in the " + this.state.answersForm[2] + "!!");
+    }
   }
 
   render() {
@@ -122,10 +221,10 @@ class Flatmates extends Component {
           <div id="modalCleanedWhere" className="modal">
             <div className="modal-content">
               <h4>From which room?</h4>
-              <a className="waves-effect waves-light btn modal-trigger" href="#modalThankYou">Living</a>
-              <a className="waves-effect waves-light btn modal-trigger" href="#modalThankYou">Kitchen</a>
-              <a className="waves-effect waves-light btn modal-trigger" href="#modalThankYou">Entrance</a>
-              <a className="waves-effect waves-light btn modal-trigger" href="#modalThankYou">Halls</a>
+              <button className="waves-effect waves-light btn modal-trigger" id="whereLiving" value="living" href="#modalThankYou" onClick={this.handleWhichTask1}>Living</button>
+              <button className="waves-effect waves-light btn modal-trigger" id="whereKitchen" value="kitchen" href="#modalThankYou" onClick={this.handleWhichTask1}>Kitchen</button>
+              <button className="waves-effect waves-light btn modal-trigger" id="whereEntrance" value="entrance" href="#modalThankYou" onClick={this.handleWhichTask1}>Entrance</button>
+              <button className="waves-effect waves-light btn modal-trigger" id="whereHalls" value="halls" href="#modalThankYou" onClick={this.handleWhichTask1}>Halls</button>
             </div>
             <div className="modal-footer">
               <a href="#!" className="modal-close waves-effect waves-green btn-flat">Back</a>
