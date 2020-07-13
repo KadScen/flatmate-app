@@ -1,0 +1,12 @@
+.addNewTaskBtn {
+    width: 125px;
+    color: orange;
+    cursor: pointer;
+    -webkit-box-shadow: 0px 0px 10px 0px #b0b0b0; 
+    box-shadow: 0px 0px 10px 0px #b0b0b0;
+    border-radius: 5px;
+}
+
+.showOnClick {
+    display: none;
+}

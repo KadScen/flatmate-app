@@ -1,0 +1,10 @@
+.footer-copyright {
+    position: fixed;
+    bottom: 0;
+    height: 2.5rem;   
+    color: grey;
+}
+
+.footer p {
+    margin-bottom: 0;
+}
